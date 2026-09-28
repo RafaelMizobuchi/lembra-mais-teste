@@ -1,0 +1,25 @@
+# Node / npm (backend, frontend-web)
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+npm-debug.log*
+
+# Vite
+frontend-web/dist/
+
+# Android / Gradle (mobile-android)
+mobile-android/.gradle/
+mobile-android/.idea/
+mobile-android/local.properties
+mobile-android/**/build/
+mobile-android/captures/
+mobile-android/*.apk
+mobile-android/*.aab
+
+# Editores / SO
+.vscode/
+.DS_Store
+Thumbs.db

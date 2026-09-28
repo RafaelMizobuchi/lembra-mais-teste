@@ -1,0 +1,8 @@
+# Troquem os placeholders pelos usuários/times reais do GitHub assim que
+# a Organization estiver criada (ex: @lembra-mais/backend).
+# https://docs.github.com/articles/about-code-owners
+
+/backend/         @usuario-backend-1 @usuario-backend-2
+/frontend-web/    @usuario-frontend-1
+/mobile-android/  @usuario-frontend-2
+/docs/            @usuario-backend-1 @usuario-frontend-1

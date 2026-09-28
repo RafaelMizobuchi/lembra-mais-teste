@@ -1,0 +1,112 @@
+// Modelo de dados inicial do Lembra+. Ver docs/roteiro.md na raiz do repo.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  PATIENT
+  CAREGIVER
+}
+
+enum MedicationForm {
+  PILL
+  DROP
+  OINTMENT
+  INJECTION
+  OTHER
+}
+
+enum DoseStatus {
+  PENDING
+  TAKEN
+  MISSED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         Role
+  createdAt    DateTime   @default(now())
+  patient      Patient?
+  caregiver    Caregiver?
+
+  @@map("users")
+}
+
+model Patient {
+  id          String             @id @default(cuid())
+  userId      String             @unique
+  // código que o paciente compartilha com um cuidador pra criar o vínculo
+  inviteCode  String             @unique @default(cuid())
+  user        User               @relation(fields: [userId], references: [id])
+  medications Medication[]
+  caregiverOf CaregiverPatient[]
+
+  @@map("patients")
+}
+
+model Caregiver {
+  id       String             @id @default(cuid())
+  userId   String             @unique
+  user     User               @relation(fields: [userId], references: [id])
+  patients CaregiverPatient[]
+
+  @@map("caregivers")
+}
+
+model CaregiverPatient {
+  id          String    @id @default(cuid())
+  caregiverId String
+  patientId   String
+  createdAt   DateTime  @default(now())
+  caregiver   Caregiver @relation(fields: [caregiverId], references: [id])
+  patient     Patient   @relation(fields: [patientId], references: [id])
+
+  @@unique([caregiverId, patientId])
+  @@map("caregiver_patient")
+}
+
+model Medication {
+  id            String         @id @default(cuid())
+  patientId     String
+  name          String
+  dosage        String
+  form          MedicationForm
+  // quantas doses existem na caixa/frasco no momento do cadastro
+  stockQuantity Int            @default(0)
+  createdAt     DateTime       @default(now())
+  patient       Patient        @relation(fields: [patientId], references: [id])
+  schedules     Schedule[]
+
+  @@map("medications")
+}
+
+model Schedule {
+  id           String     @id @default(cuid())
+  medicationId String
+  timeOfDay    String // formato "HH:mm"
+  daysOfWeek   Int[] // 0 (domingo) a 6 (sábado); vazio = todo dia
+  medication   Medication @relation(fields: [medicationId], references: [id])
+  doseLogs     DoseLog[]
+
+  @@map("schedules")
+}
+
+model DoseLog {
+  id           String     @id @default(cuid())
+  scheduleId   String
+  scheduledFor DateTime
+  takenAt      DateTime?
+  status       DoseStatus @default(PENDING)
+  schedule     Schedule   @relation(fields: [scheduleId], references: [id])
+
+  @@map("dose_logs")
+}
