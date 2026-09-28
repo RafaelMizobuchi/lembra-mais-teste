@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowBracketIcon, ArrowRightIcon, LockIcon, MailIcon, PersonPlusIcon, ShieldIcon } from '../components/icons'
+import { ArrowBracketIcon, LockIcon, MailIcon, PersonPlusIcon, ShieldIcon } from '../components/icons'
 import { PasswordInput } from '../components/PasswordInput'
 import { api, ApiError } from '../lib/api'
 import { type Session, saveSession } from '../lib/session'
